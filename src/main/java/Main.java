@@ -7,10 +7,10 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-        Terminal terminal = terminalFactory.createTerminal();
-        terminal.setCursorVisible(false);
-        terminal.clearScreen();
+
+        // initiate terminal
+        Terminal terminal = initateTerminal();
+
 
         Position positionPlayer = new Position(5, 5);
         int playerX = positionPlayer.getX();
@@ -150,5 +150,12 @@ public class Main {
             }
             monsterPos = tempPos;
         }
+    }
+    private static Terminal initateTerminal() throws IOException {
+        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+        Terminal terminal = terminalFactory.createTerminal();
+        terminal.setCursorVisible(false);
+        terminal.clearScreen();
+        return  terminal;
     }
 }
