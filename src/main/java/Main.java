@@ -9,18 +9,14 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         // initiate terminal
-        Terminal terminal = initateTerminal();
+        Terminal terminal = initiateTerminal();
 
+        // create player
+        Player player = new Player(5, 5,5,5,'X');
+        int playerX = player.getX();
+        int playerY = player.getY();
 
-        Position positionPlayer = new Position(5, 5);
-        int playerX = positionPlayer.getX();
-        int playerY = positionPlayer.getY();
-        final char player = 'X';
-
-        terminal.setCursorPosition(positionPlayer.getX(), positionPlayer.getY());
-        terminal.setForegroundColor(TextColor.ANSI.CYAN);
-        terminal.putCharacter(player);
-        terminal.flush();
+        setPlayer(terminal, player);
 
         Position[] monsterPos = new Position[3];
         final char monster = 'Ö';
@@ -111,7 +107,7 @@ public class Main {
 
                 terminal.setCursorPosition(playerX, playerY);
                 terminal.setForegroundColor(TextColor.ANSI.CYAN);
-                terminal.putCharacter(player);
+                terminal.putCharacter(player.getPlayerIcon());
             }
             terminal.flush();
 
@@ -151,11 +147,21 @@ public class Main {
             monsterPos = tempPos;
         }
     }
-    private static Terminal initateTerminal() throws IOException {
+
+    // method to initiate the terminal
+    private static Terminal initiateTerminal() throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
         terminal.setCursorVisible(false);
         terminal.clearScreen();
         return  terminal;
+    }
+
+    //method to set the player on the terminal
+    private static void setPlayer(Terminal terminal, Player player) throws IOException {
+        terminal.setCursorPosition(player.getX(), player.getY());
+        terminal.setForegroundColor(TextColor.ANSI.CYAN);
+        terminal.putCharacter(player.getPlayerIcon());
+        terminal.flush();
     }
 }
