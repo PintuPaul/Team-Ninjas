@@ -13,9 +13,8 @@ public class Main {
 
         // create player
         Player player = new Player(5, 5,5,5,'X');
-        int playerX = player.getX();
-        int playerY = player.getY();
 
+        // set the player on the terminal
         setPlayer(terminal, player);
 
         Position[] monsterPos = new Position[3];
@@ -46,6 +45,12 @@ public class Main {
         }
         terminal.flush();*/
 
+
+        // get the initial position of the player
+        int playerX = player.getX();
+        int playerY = player.getY();
+
+
         boolean continueReadingInput = true;
 
         while (continueReadingInput) {
@@ -63,8 +68,13 @@ public class Main {
                 terminal.close();
             }
 
-            int prevX = playerX;
-            int prevY = playerY;
+            // save the current position of the player before moving
+            player.setPrevX(playerX);
+            player.setPrevY(playerY);
+
+            // fetch previous position of the player
+            int prevX = player.getPrevX();
+            int prevY = player.getPrevY();
 
             switch (keyStroke.getKeyType()) {
                 case ArrowDown:
@@ -102,12 +112,18 @@ public class Main {
                 System.out.println("quit");
                 terminal.close();
             } else {
+                // clean previous position of player
                 terminal.setCursorPosition(prevX, prevY);
                 terminal.putCharacter(' ');
 
+                // move the player to new position
                 terminal.setCursorPosition(playerX, playerY);
                 terminal.setForegroundColor(TextColor.ANSI.CYAN);
                 terminal.putCharacter(player.getPlayerIcon());
+
+                // save new position of the player
+                player.setX(playerX);
+                player.setY(playerY);
             }
             terminal.flush();
 
@@ -157,7 +173,7 @@ public class Main {
         return  terminal;
     }
 
-    //method to set the player on the terminal
+    // method to set the player on the terminal
     private static void setPlayer(Terminal terminal, Player player) throws IOException {
         terminal.setCursorPosition(player.getX(), player.getY());
         terminal.setForegroundColor(TextColor.ANSI.CYAN);
