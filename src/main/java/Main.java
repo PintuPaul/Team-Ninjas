@@ -11,17 +11,17 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-
         // initiate terminal
         Terminal terminal = initiateTerminal();
 
         // create player
         Position player = new Position(20, 10, 20, 10,'\u263a');
 
-        final int pointsAvoidingMonster= 1;
-
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
+
+        // display score
+        final int pointsAvoidingMonster= 1;
         displayScore(terminal, player.getScore());
 
         // create monsters
@@ -33,7 +33,6 @@ public class Main {
         // Save initial position of monsters for resetting the monster positions
         List<Position> defaultMonsterPosition = new ArrayList<>();
         defaultMonsterPosition.addAll(monsters) ;
-
 
         // set monsters on the terminal
         for (Position monster : monsters) {
@@ -108,7 +107,7 @@ public class Main {
                 }
             }
 
-            // check if the player crashes with any of the boosters
+            // check if the player hits the boosters
             boolean crashIntoBooster = false;
             for (Position booster : boosters) {
                 if (booster.getX() == prevX && booster.getY() == prevY) {
@@ -117,6 +116,7 @@ public class Main {
                 }
             }
 
+            // player hits all boosters , game over, player WON
             if (crashIntoBooster) {
                 winChance ++ ;
                 if (winChance == boosters.size()) {
@@ -126,8 +126,9 @@ public class Main {
                 }
             }
 
-            // player crashed with the monster , game over
+            // player crashed with the monster , game over , player LOST
             if (crashIntoObsticle) {
+                // display the message on to the terminal
                 String message = "Game Over";
                 for (int i = 0; i < message.length(); i++) {
                     terminal.setCursorPosition(i+35, 11);
@@ -137,6 +138,7 @@ public class Main {
                     Thread.sleep(300); // might throw InterruptedException
                 }
                 //Thread.sleep(1000); // might throw InterruptedException
+
                 continueReadingInput = false;
                 System.out.println("You LOST :( ");
                 terminal.close();
