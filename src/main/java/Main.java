@@ -31,16 +31,15 @@ public class Main {
             printToTerminal(terminal,monster.getX(),monster.getY(),TextColor.ANSI.RED,monster.getPlayerIcon());
         }
 
-        // add boosters and save the positions in a list
-        int noOfBoosters = 5 ;
-        List<Position> boosters = new ArrayList<>(noOfBoosters);
-        while (noOfBoosters > 0) {
-            Random random = new Random();
-            boosters.add(new Position(random.nextInt(40),random.nextInt(30),'*') );
-            noOfBoosters -- ;
-        }
+        // add boosters
+        List<Position> boosters = new ArrayList<>();
+        boosters.add(new Position(15, 10, '*') );
+        boosters.add(new Position(15, 15, '*') );
+        boosters.add(new Position(20, 8, '*') );
+        boosters.add(new Position(20, 5, '*') );
 
-        // print boosters on the terminal
+
+        // set boosters on the terminal
         for (Position booster : boosters) {
             printToTerminal(terminal,booster.getX(), booster.getY(), TextColor.ANSI.GREEN, booster.getPlayerIcon());
         }
@@ -102,8 +101,11 @@ public class Main {
 
             // check if the player crashes with any of the boosters
             boolean crashIntoBooster = false;
+            int boosterX = 0, boosterY = 0;
             for (Position booster : boosters) {
-                if (booster.getX() == prevX && booster.getY() == prevY) {
+                boosterX = booster.getX();
+                boosterY = booster.getY();
+                if (boosterX == prevX && boosterY == prevY) {
                     crashIntoBooster = true;
                     break;
                 }
@@ -117,6 +119,11 @@ public class Main {
             } else {
                 // clean previous position of the player
                 cleanPreviousPosition(terminal,prevX,prevY);
+
+                if (crashIntoBooster) {
+                    playerX = boosterX + 2 ;
+                    playerY = boosterY + 2 ;
+                }
 
                 // set the player to new position
                 printToTerminal(terminal,playerX,playerY,TextColor.ANSI.CYAN,player.getPlayerIcon()) ;
@@ -140,25 +147,28 @@ public class Main {
                 prevMonsterX = monsterX;
                 prevMonsterY = monsterY;
 
-                // move the monster
-                if (monsterX < playerX) {
-                    monsterX = ++monsterX;
-                }
-                if (monsterY < playerY) {
-                    monsterY = ++monsterY;
-                }
-                if (monsterX > playerX) {
-                    monsterX = --monsterX;
-                }
-                if (monsterY > playerY) {
-                    monsterY = --monsterY;
-                }
+                if (! crashIntoBooster) {
 
-                // clear the previous monster position
-                cleanPreviousPosition(terminal,prevMonsterX,prevMonsterY);
+                    // move the monster
+                    if (monsterX < playerX) {
+                        monsterX = ++monsterX;
+                    }
+                    if (monsterY < playerY) {
+                        monsterY = ++monsterY;
+                    }
+                    if (monsterX > playerX) {
+                        monsterX = --monsterX;
+                    }
+                    if (monsterY > playerY) {
+                        monsterY = --monsterY;
+                    }
 
-                // set the monster to new position
-                printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
+                    // clear the previous monster position
+                    cleanPreviousPosition(terminal,prevMonsterX,prevMonsterY);
+
+                    // set the monster to new position
+                    printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
+                }
 
                 // save the new monster positions in a temporary list
                 Position newMonsterPos = new Position(monsterX, monsterY, 'Ö');
