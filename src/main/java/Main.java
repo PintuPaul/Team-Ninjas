@@ -45,9 +45,9 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
-        boosters.add(new Position(15, 5, '*') );
-        boosters.add(new Position(25, 9, '*') );
-        boosters.add(new Position(17, 15, '*') );
+        boosters.add(new Position(15, 5, '¤') );
+        boosters.add(new Position(25, 9, '¤') );
+        boosters.add(new Position(17, 15, '¤') );
 
         // set boosters on the terminal
         for (Position booster : boosters) {
@@ -258,12 +258,19 @@ public class Main {
     }
 
     private static void handleBackground(Terminal terminal) throws IOException {
+        // get size of the terminal
         int rowSize = terminal.getTerminalSize().getRows();
         int colSize = terminal.getTerminalSize().getColumns();
 
+        // draw a border for the terminal
         TextGraphics tGraphics = terminal.newTextGraphics();
         tGraphics.drawRectangle(
-                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '.');
+                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '*');
 
+        // add a header to the terminal
+            tGraphics.putString(35,0,"MONSTER GAME");
+
+        terminal.flush();
     }
+
 }
