@@ -14,23 +14,23 @@ public class Main {
         Terminal terminal = initiateTerminal();
 
         // create player
-        Position player = new Position(5, 5, 5, 5, 'X');
+        Position player = new Position(20, 10, 20, 10, 'X');
 
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
 
         // create monsters
         List<Position> monsters = new ArrayList<>();
-        Position monster1 = new Position(10, 10, 10, 10, 'Ö');
-        Position monster2 = new Position(1, 1, 1, 1, 'Ö');
-        Position monster3 = new Position(20, 10, 20, 10, 'Ö');
+        Position monster1 = new Position(0, 10, 'Ö');
+        Position monster2 = new Position(40, 1, 'Ö');
+        Position monster3 = new Position(40, 40, 'Ö');
         monsters.add(monster1);
         monsters.add(monster2);
         monsters.add(monster3);
 
         // set monsters on the terminal
-        for (int i = 0; i < monsters.size(); i++) {
-            printToTerminal(terminal,monsters.get(i).getX(),monsters.get(i).getY(),TextColor.ANSI.RED,monsters.get(i).getPlayerIcon());
+        for (Position monster : monsters) {
+            printToTerminal(terminal,monster.getX(),monster.getY(),TextColor.ANSI.RED,monster.getPlayerIcon());
         }
 
         // get the initial position of the player
@@ -40,13 +40,14 @@ public class Main {
         // read user input to move the player, move monsters behind the player
         boolean continueReadingInput = true;
         while (continueReadingInput) {
-
+            // user input
             KeyStroke keyStroke;
             do {
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
             } while (keyStroke == null);
 
+            // if user wants to quit
             Character c = keyStroke.getCharacter();
             if (c == Character.valueOf('q')) {
                 continueReadingInput = false;
@@ -62,6 +63,7 @@ public class Main {
             int prevX = player.getPrevX();
             int prevY = player.getPrevY();
 
+            // move player based on user input
             switch (keyStroke.getKeyType()) {
                 case ArrowDown:
                     playerY++;
@@ -79,19 +81,19 @@ public class Main {
 
             // check if the player crashes with any of the monsters
             boolean crashIntoObsticle = false;
-            for (int i = 0; i < monsters.size(); i++) {
-                if (monsters.get(i).getX() == prevX && monsters.get(i).getY() == prevY) {
+            for (Position monster : monsters) {
+                if (monster.getX() == prevX && monster.getY() == prevY) {
                     crashIntoObsticle = true;
                 }
             }
 
-            // player crashed with the monster
+            // player crashed with the monster , game over
             if (crashIntoObsticle) {
                 continueReadingInput = false;
                 System.out.println("quit");
                 terminal.close();
             } else {
-                // clean previous position of player
+                // clean previous position of the player
                 cleanPreviousPosition(terminal,prevX,prevY);
 
                 // set the player to new position
@@ -101,16 +103,16 @@ public class Main {
                 player.setX(playerX);
                 player.setY(playerY);
             }
-            terminal.flush();
 
             int monsterX, monsterY, prevMonsterX, prevMonsterY;
             List<Position> tempMonsters = new ArrayList<>();
 
-            for (int j = 0; j < monsters.size(); j++) {
+            // move monsters based on player position
+            for (Position monster : monsters) {
 
                 // get the current position of monsters
-                monsterX = monsters.get(j).getX();
-                monsterY = monsters.get(j).getY();
+                monsterX = monster.getX();
+                monsterY = monster.getY();
 
                 // save the current position of the monster before moving
                 prevMonsterX = monsterX;
@@ -134,7 +136,7 @@ public class Main {
                 cleanPreviousPosition(terminal,prevMonsterX,prevMonsterY);
 
                 // set the monster to new position
-                printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monsters.get(j).getPlayerIcon()) ;
+                printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
 
                 // save the new monster positions in a temporary list
                 Position newMonsterPos = new Position(monsterX, monsterY, 'Ö');
@@ -163,6 +165,7 @@ public class Main {
         terminal.flush();
     }
 
+    // clean previous player / monster position on the terminal
     private static void cleanPreviousPosition (Terminal terminal, int x,int y) throws IOException {
         terminal.setCursorPosition(x, y);
         terminal.putCharacter(' ');
