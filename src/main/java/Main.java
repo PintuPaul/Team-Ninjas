@@ -11,7 +11,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-
         // initiate terminal
         Terminal terminal = initiateTerminal();
 
@@ -34,7 +33,6 @@ public class Main {
         // Save initial position of monsters for resetting the monster positions
         List<Position> defaultMonsterPosition = new ArrayList<>();
         defaultMonsterPosition.addAll(monsters) ;
-
 
         // set monsters on the terminal
         for (Position monster : monsters) {
@@ -109,7 +107,7 @@ public class Main {
                 }
             }
 
-            // check if the player crashes with any of the boosters
+            // check if the player hits the boosters
             boolean crashIntoBooster = false;
             for (Position booster : boosters) {
                 if (booster.getX() == prevX && booster.getY() == prevY) {
@@ -119,6 +117,7 @@ public class Main {
                     break;
                 }
             }
+
             if (crashIntoBooster) {
                 winChance ++ ;
                 if (winChance == boosters.size()) {
@@ -128,8 +127,9 @@ public class Main {
                 }
             }
 
-            // player crashed with the monster , game over
+            // player crashed with the monster , game over , player LOST
             if (crashIntoObsticle) {
+                // display the message on to the terminal
                 String message = "Game Over";
                 for (int i = 0; i < message.length(); i++) {
                     terminal.setCursorPosition(i+35, 11);
@@ -139,6 +139,7 @@ public class Main {
                     Thread.sleep(300); // might throw InterruptedException
                 }
                 //Thread.sleep(1000); // might throw InterruptedException
+
                 continueReadingInput = false;
                 System.out.println("You LOST :( ");
                 terminal.close();
