@@ -1,5 +1,10 @@
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
@@ -14,30 +19,29 @@ public class Main {
         // initiate terminal
         Terminal terminal = initiateTerminal();
 
+        // handle terminal
+        handleBackground(terminal);
+
         // create player
         Position player = new Position(20, 10, 20, 10,'\u263a');
 
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
 
-        // display score
-        final int pointsAvoidingMonster= 1;
-        displayScore(terminal, player.getScore());
-
         // create monsters
         List<Position> monsters = new ArrayList<>();
-        monsters.add(new Position(0, 10, 'Ö'));
+        monsters.add(new Position(1, 10, 'Ö'));
         monsters.add(new Position(40, 5, 'Ö'));
         monsters.add(new Position(40, 15, 'Ö'));
-
-        // Save initial position of monsters for resetting the monster positions
-        List<Position> defaultMonsterPosition = new ArrayList<>();
-        defaultMonsterPosition.addAll(monsters) ;
 
         // set monsters on the terminal
         for (Position monster : monsters) {
             printToTerminal(terminal,monster.getX(),monster.getY(),TextColor.ANSI.RED,monster.getPlayerIcon());
         }
+
+        // Save initial position of monsters for resetting the monster positions
+        List<Position> defaultMonsterPosition = new ArrayList<>();
+        defaultMonsterPosition.addAll(monsters) ;
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
@@ -49,6 +53,10 @@ public class Main {
         for (Position booster : boosters) {
             printToTerminal(terminal,booster.getX(), booster.getY(), TextColor.ANSI.GREEN, booster.getPlayerIcon());
         }
+
+        // display score
+        final int pointsAvoidingMonster= 1;
+        displayScore(terminal, player.getScore());
 
         // get the initial position of the player
         int playerX = player.getX();
@@ -131,10 +139,11 @@ public class Main {
                 // display the message on to the terminal
                 String message = "Game Over";
                 for (int i = 0; i < message.length(); i++) {
-                    terminal.setCursorPosition(i+35, 11);
+/*                    terminal.setCursorPosition(i+35, 11);
                     terminal.putCharacter(message.charAt(i));
                     terminal.setForegroundColor(TextColor.ANSI.RED);
-                    terminal.flush();
+                    terminal.flush();*/
+                    printToTerminal(terminal,i+35,11,TextColor.ANSI.RED,message.charAt(i));
                     Thread.sleep(300); // might throw InterruptedException
                 }
                 //Thread.sleep(1000); // might throw InterruptedException
@@ -248,5 +257,13 @@ public class Main {
 
     }
 
+    private static void handleBackground(Terminal terminal) throws IOException {
+        int rowSize = terminal.getTerminalSize().getRows();
+        int colSize = terminal.getTerminalSize().getColumns();
 
+        TextGraphics tGraphics = terminal.newTextGraphics();
+        tGraphics.drawRectangle(
+                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '.');
+
+    }
 }
