@@ -233,7 +233,6 @@ public class Main {
         terminal.putCharacter(' ');
         terminal.flush();
     }
-}
 
     private static void displayScore(Terminal terminal, int score) throws IOException {
         // If player survives a move, add a point, play a sound
