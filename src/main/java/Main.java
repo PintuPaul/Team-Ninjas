@@ -18,7 +18,8 @@ public class Main {
         // create player
         Position player = new Position(20, 10, 20, 10,'\u263a');
 
-        final int pointsAvoidingMonster= 1;
+        final int scoreAvoidingMonster= 1;
+        final int scoreBooster = 4;
 
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
@@ -113,10 +114,11 @@ public class Main {
             for (Position booster : boosters) {
                 if (booster.getX() == prevX && booster.getY() == prevY) {
                     crashIntoBooster = true;
+                    booster.setScore(scoreBooster);
+                    displayScore(terminal, booster.getScore());
                     break;
                 }
             }
-
             if (crashIntoBooster) {
                 winChance ++ ;
                 if (winChance == boosters.size()) {
@@ -152,9 +154,9 @@ public class Main {
                 player.setX(playerX);
                 player.setY(playerY);
 
-                // player avoided monster, increase points by 5
-                player.setScore(pointsAvoidingMonster);
-                displayScore(terminal, player.getScore());
+                // player avoided monster, increase points
+               // player.setScore(scoreAvoidingMonster);
+                //displayScore(terminal, player.getScore());
             }
 
             int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
@@ -237,14 +239,17 @@ public class Main {
     private static void displayScore(Terminal terminal, int score) throws IOException {
         // If player survives a move, add a point, play a sound
         String message = "Players score: " + score;
-        final int textStartPositionX = 50;
-        final int textPositionY = 50;
 
+
+        final int textStartPositionX = 60;
+        final int textPositionY = 2;
+        //Play a little sound when scoring
+       // Thread thread = new Thread(new Music());
+     //   thread.start();
         for (int i = 0; i< message.length(); i++){
             printToTerminal(terminal, textStartPositionX + i, textPositionY, TextColor.ANSI.GREEN,message.charAt(i));
-        }
+        };
 
     }
-
 
 }
