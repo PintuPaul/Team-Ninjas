@@ -13,11 +13,6 @@ public class Position {
         this.playerIcon = playerIcon;
     }
 
-    public Position(int prevX, int prevY) {
-        this.prevX = prevX;
-        this.prevY = prevY;
-    }
-
     public Position(int x, int y, char playerIcon) {
         this.x = x;
         this.y = y;
@@ -58,9 +53,5 @@ public class Position {
 
     public char getPlayerIcon() {
         return playerIcon;
-    }
-
-    public void setPlayerIcon(char playerIcon) {
-        this.playerIcon = playerIcon;
     }
 }
