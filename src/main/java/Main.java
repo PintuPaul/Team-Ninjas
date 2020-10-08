@@ -6,7 +6,6 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -23,8 +22,12 @@ public class Main {
         // create monsters
         List<Position> monsters = new ArrayList<>();
         monsters.add(new Position(0, 10, 'Ö'));
-        monsters.add(new Position(40, 1, 'Ö'));
-        monsters.add(new Position(40, 40, 'Ö'));
+        monsters.add(new Position(40, 5, 'Ö'));
+        monsters.add(new Position(40, 15, 'Ö'));
+
+        // Save initial position of monsters for resetting the monster positions
+        List<Position> defaultMonsterPosition = new ArrayList<>();
+        defaultMonsterPosition.addAll(monsters) ;
 
         // set monsters on the terminal
         for (Position monster : monsters) {
@@ -33,11 +36,9 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
-        boosters.add(new Position(15, 10, '*') );
-        boosters.add(new Position(15, 15, '*') );
-        boosters.add(new Position(20, 8, '*') );
-        boosters.add(new Position(20, 5, '*') );
-
+        boosters.add(new Position(15, 5, '*') );
+        boosters.add(new Position(25, 9, '*') );
+        boosters.add(new Position(17, 15, '*') );
 
         // set boosters on the terminal
         for (Position booster : boosters) {
@@ -50,7 +51,9 @@ public class Main {
 
         // read user input to move the player, move monsters behind the player
         boolean continueReadingInput = true;
+        int winChance = 0;
         while (continueReadingInput) {
+
             // user input
             KeyStroke keyStroke;
             do {
@@ -101,29 +104,31 @@ public class Main {
 
             // check if the player crashes with any of the boosters
             boolean crashIntoBooster = false;
-            int boosterX = 0, boosterY = 0;
             for (Position booster : boosters) {
-                boosterX = booster.getX();
-                boosterY = booster.getY();
-                if (boosterX == prevX && boosterY == prevY) {
+                if (booster.getX() == prevX && booster.getY() == prevY) {
                     crashIntoBooster = true;
                     break;
+                }
+            }
+
+            if (crashIntoBooster) {
+                winChance ++ ;
+                if (winChance == boosters.size()) {
+                    continueReadingInput = false;
+                    System.out.println("You WON !!! ");
+                    terminal.close();
                 }
             }
 
             // player crashed with the monster , game over
             if (crashIntoObsticle) {
                 continueReadingInput = false;
-                System.out.println("quit");
+                System.out.println("You LOST :( ");
                 terminal.close();
             } else {
+
                 // clean previous position of the player
                 cleanPreviousPosition(terminal,prevX,prevY);
-
-                if (crashIntoBooster) {
-                    playerX = boosterX + 2 ;
-                    playerY = boosterY + 2 ;
-                }
 
                 // set the player to new position
                 printToTerminal(terminal,playerX,playerY,TextColor.ANSI.CYAN,player.getPlayerIcon()) ;
@@ -133,7 +138,7 @@ public class Main {
                 player.setY(playerY);
             }
 
-            int monsterX, monsterY, prevMonsterX, prevMonsterY;
+            int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
             List<Position> tempMonsters = new ArrayList<>();
 
             // move monsters based on player position
@@ -147,9 +152,8 @@ public class Main {
                 prevMonsterX = monsterX;
                 prevMonsterY = monsterY;
 
+                // move the monster if player has not hit a booster
                 if (! crashIntoBooster) {
-
-                    // move the monster
                     if (monsterX < playerX) {
                         monsterX = ++monsterX;
                     }
@@ -162,22 +166,28 @@ public class Main {
                     if (monsterY > playerY) {
                         monsterY = --monsterY;
                     }
-
-                    // clear the previous monster position
-                    cleanPreviousPosition(terminal,prevMonsterX,prevMonsterY);
-
-                    // set the monster to new position
-                    printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
                 }
+                // if player hits the booster, reset monster positions
+                else
+                {
+                    monsterX = defaultMonsterPosition.get(pos).getX();
+                    monsterY = defaultMonsterPosition.get(pos).getY();
+                }
+
+                // clear the previous monster position
+                cleanPreviousPosition(terminal,prevMonsterX,prevMonsterY);
+
+                // set the monster to new position
+                printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
 
                 // save the new monster positions in a temporary list
                 Position newMonsterPos = new Position(monsterX, monsterY, 'Ö');
                 tempMonsters.add(newMonsterPos);
+                pos ++ ;
             }
             // Reset the monster list with new monster positions
             monsters.clear();
             monsters.addAll(tempMonsters);
-
         }
     }
 
