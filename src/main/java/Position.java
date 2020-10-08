@@ -4,6 +4,7 @@ public class Position {
     private int prevX;
     private int prevY;
     private char playerIcon;
+    private int score;
 
     public Position(int x, int y, int prevX, int prevY, char playerIcon) {
         this.x = x;
@@ -11,12 +12,14 @@ public class Position {
         this.prevX = prevX;
         this.prevY = prevY;
         this.playerIcon = playerIcon;
+        this.score = 0;
     }
 
     public Position(int x, int y, char playerIcon) {
         this.x = x;
         this.y = y;
         this.playerIcon = playerIcon;
+        this.score = 0;
     }
 
     public int getX() {
@@ -53,5 +56,13 @@ public class Position {
 
     public char getPlayerIcon() {
         return playerIcon;
+    }
+
+    public void setScore (int score){
+        this.score = this.score + score;
+    }
+
+    public int getScore(){
+       return this.score;
     }
 }
