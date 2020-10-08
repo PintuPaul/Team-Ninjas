@@ -14,7 +14,7 @@ public class Main {
         Terminal terminal = initiateTerminal();
 
         // create player
-        Position player = new Position(20, 10, 20, 10, 'X');
+        Position player = new Position(20, 10, 20, 10,'\u263a');
 
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
