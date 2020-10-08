@@ -126,11 +126,20 @@ public class Main {
                     break;
                 }
             }
+            // player catch all items , player wins
 
             // player hits all boosters , game over, player WON
             if (crashIntoBooster) {
                 winChance ++ ;
                 if (winChance == boosters.size()) {
+                    String message = "You WON !!! :)    ";
+                    for (int i = 0; i < message.length(); i++) {
+                        terminal.setCursorPosition(i+35, 11);
+                        terminal.setForegroundColor(TextColor.ANSI.GREEN);
+                        terminal.putCharacter(message.charAt(i));
+                        terminal.flush();
+                        Thread.sleep(300); // might throw InterruptedException
+                    }
                     continueReadingInput = false;
                     System.out.println("You WON !!! ");
                     terminal.close();
@@ -150,7 +159,6 @@ public class Main {
                     Thread.sleep(300); // might throw InterruptedException
                 }
                 //Thread.sleep(1000); // might throw InterruptedException
-
                 continueReadingInput = false;
                 System.out.println("You LOST :( ");
                 terminal.close();
