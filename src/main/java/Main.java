@@ -15,6 +15,7 @@ public class Main {
         // initiate terminal
         Terminal terminal = initiateTerminal();
 
+
         // create player
         Position player = new Position(20, 10, 20, 10,'\u263a');
 
@@ -116,19 +117,19 @@ public class Main {
                     break;
                 }
             }
+            // player catch all items , player wins
 
             if (crashIntoBooster) {
                 winChance ++ ;
                 if (winChance == boosters.size()) {
-                    String message = "You WON !!! :)";
+                    String message = "You WON !!! :)    ";
                     for (int i = 0; i < message.length(); i++) {
                         terminal.setCursorPosition(i+35, 11);
-                        terminal.putCharacter(message.charAt(i));
                         terminal.setForegroundColor(TextColor.ANSI.GREEN);
+                        terminal.putCharacter(message.charAt(i));
                         terminal.flush();
                         Thread.sleep(300); // might throw InterruptedException
                     }
-
                     continueReadingInput = false;
                     System.out.println("You WON !!! ");
                     terminal.close();
@@ -137,7 +138,7 @@ public class Main {
 
             // player crashed with the monster , game over
             if (crashIntoObsticle) {
-                String message = "Game Over";
+                String message = "Game Over :(   ";
                 for (int i = 0; i < message.length(); i++) {
                     terminal.setCursorPosition(i+35, 11);
                     terminal.putCharacter(message.charAt(i));
@@ -145,7 +146,7 @@ public class Main {
                     terminal.flush();
                     Thread.sleep(300); // might throw InterruptedException
                 }
-                //Thread.sleep(1000); // might throw InterruptedException
+
                 continueReadingInput = false;
                 System.out.println("You LOST :( ");
                 terminal.close();
@@ -254,6 +255,7 @@ public class Main {
         }
 
     }
+
 
 
 }
