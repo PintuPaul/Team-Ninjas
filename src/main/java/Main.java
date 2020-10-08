@@ -28,7 +28,7 @@ public class Main {
 
         // display score
         final int scoreAvoidingMonster= 1;
-        final int scoreBooster = 4;
+        int scoreBooster = 0;
         displayScore(terminal, player.getScore());
 
         // create monsters
@@ -80,7 +80,7 @@ public class Main {
             if (c == Character.valueOf('q')) {
                continueReadingInput = false;
                System.out.println("quit");
-                terminal.close();
+               terminal.close();
             }
 
             // save the current position of the player before moving
@@ -121,6 +121,7 @@ public class Main {
             for (Position booster : boosters) {
                 if (booster.getX() == prevX && booster.getY() == prevY) {
                     crashIntoBooster = true;
+                    scoreBooster = scoreBooster + 4;
                     booster.setScore(scoreBooster);
                     displayScore(terminal, booster.getScore());
                     break;
