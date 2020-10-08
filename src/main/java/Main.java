@@ -10,6 +10,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
 
+
         // initiate terminal
         Terminal terminal = initiateTerminal();
 
@@ -49,8 +50,8 @@ public class Main {
 
             Character c = keyStroke.getCharacter();
             if (c == Character.valueOf('q')) {
-                continueReadingInput = false;
-                System.out.println("quit");
+               continueReadingInput = false;
+               System.out.println("quit");
                 terminal.close();
             }
 
@@ -87,6 +88,15 @@ public class Main {
 
             // player crashed with the monster
             if (crashIntoObsticle) {
+                String message = "Game Over";
+                for (int i = 0; i < message.length(); i++) {
+                    terminal.setCursorPosition(i+35, 11);
+                    terminal.putCharacter(message.charAt(i));
+                    terminal.setForegroundColor(TextColor.ANSI.RED);
+                    terminal.flush();
+                    Thread.sleep(300); // might throw InterruptedException
+                }
+                //Thread.sleep(1000); // might throw InterruptedException
                 continueReadingInput = false;
                 System.out.println("quit");
                 terminal.close();
