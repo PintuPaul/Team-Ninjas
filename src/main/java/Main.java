@@ -6,6 +6,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -21,16 +22,27 @@ public class Main {
 
         // create monsters
         List<Position> monsters = new ArrayList<>();
-        Position monster1 = new Position(0, 10, 'Ö');
-        Position monster2 = new Position(40, 1, 'Ö');
-        Position monster3 = new Position(40, 40, 'Ö');
-        monsters.add(monster1);
-        monsters.add(monster2);
-        monsters.add(monster3);
+        monsters.add(new Position(0, 10, 'Ö'));
+        monsters.add(new Position(40, 1, 'Ö'));
+        monsters.add(new Position(40, 40, 'Ö'));
 
         // set monsters on the terminal
         for (Position monster : monsters) {
             printToTerminal(terminal,monster.getX(),monster.getY(),TextColor.ANSI.RED,monster.getPlayerIcon());
+        }
+
+        // add boosters and save the positions in a list
+        int noOfBoosters = 5 ;
+        List<Position> boosters = new ArrayList<>(noOfBoosters);
+        while (noOfBoosters > 0) {
+            Random random = new Random();
+            boosters.add(new Position(random.nextInt(40),random.nextInt(30),'*') );
+            noOfBoosters -- ;
+        }
+
+        // print boosters on the terminal
+        for (Position booster : boosters) {
+            printToTerminal(terminal,booster.getX(), booster.getY(), TextColor.ANSI.GREEN, booster.getPlayerIcon());
         }
 
         // get the initial position of the player
@@ -84,6 +96,16 @@ public class Main {
             for (Position monster : monsters) {
                 if (monster.getX() == prevX && monster.getY() == prevY) {
                     crashIntoObsticle = true;
+                    break;
+                }
+            }
+
+            // check if the player crashes with any of the boosters
+            boolean crashIntoBooster = false;
+            for (Position booster : boosters) {
+                if (booster.getX() == prevX && booster.getY() == prevY) {
+                    crashIntoBooster = true;
+                    break;
                 }
             }
 
@@ -145,6 +167,7 @@ public class Main {
             // Reset the monster list with new monster positions
             monsters.clear();
             monsters.addAll(tempMonsters);
+
         }
     }
 
@@ -171,4 +194,5 @@ public class Main {
         terminal.putCharacter(' ');
         terminal.flush();
     }
+
 }
