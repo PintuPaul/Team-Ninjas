@@ -1,5 +1,10 @@
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
@@ -14,6 +19,9 @@ public class Main {
         // initiate terminal
         Terminal terminal = initiateTerminal();
 
+        // handle terminal
+        handleBackground(terminal);
+
         // create player
         Position player = new Position(20, 10, 20, 10,'\u263a');
 
@@ -22,34 +30,35 @@ public class Main {
 
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
+
+        // display score  
         displayScore(terminal, player.getScore());
 
         // create monsters
         List<Position> monsters = new ArrayList<>();
-        monsters.add(new Position(0, 10, 'Ö'));
+        monsters.add(new Position(1, 10, 'Ö'));
         monsters.add(new Position(40, 5, 'Ö'));
         monsters.add(new Position(40, 15, 'Ö'));
-
-        // Save initial position of monsters for resetting the monster positions
-        List<Position> defaultMonsterPosition = new ArrayList<>();
-        defaultMonsterPosition.addAll(monsters) ;
 
         // set monsters on the terminal
         for (Position monster : monsters) {
             printToTerminal(terminal,monster.getX(),monster.getY(),TextColor.ANSI.RED,monster.getPlayerIcon());
         }
 
+        // Save initial position of monsters for resetting the monster positions
+        List<Position> defaultMonsterPosition = new ArrayList<>();
+        defaultMonsterPosition.addAll(monsters) ;
+
         // add boosters
         List<Position> boosters = new ArrayList<>();
-        boosters.add(new Position(15, 5, '*') );
-        boosters.add(new Position(25, 9, '*') );
-        boosters.add(new Position(17, 15, '*') );
+        boosters.add(new Position(15, 5, '¤') );
+        boosters.add(new Position(25, 9, '¤') );
+        boosters.add(new Position(17, 15, '¤') );
 
         // set boosters on the terminal
         for (Position booster : boosters) {
             printToTerminal(terminal,booster.getX(), booster.getY(), TextColor.ANSI.GREEN, booster.getPlayerIcon());
-        }
-
+        }       
         // get the initial position of the player
         int playerX = player.getX();
         int playerY = player.getY();
@@ -118,6 +127,7 @@ public class Main {
                 }
             }
 
+            // player hits all boosters , game over, player WON
             if (crashIntoBooster) {
                 winChance ++ ;
                 if (winChance == boosters.size()) {
@@ -132,10 +142,11 @@ public class Main {
                 // display the message on to the terminal
                 String message = "Game Over";
                 for (int i = 0; i < message.length(); i++) {
-                    terminal.setCursorPosition(i+35, 11);
+/*                    terminal.setCursorPosition(i+35, 11);
                     terminal.putCharacter(message.charAt(i));
                     terminal.setForegroundColor(TextColor.ANSI.RED);
-                    terminal.flush();
+                    terminal.flush();*/
+                    printToTerminal(terminal,i+35,11,TextColor.ANSI.RED,message.charAt(i));
                     Thread.sleep(300); // might throw InterruptedException
                 }
                 //Thread.sleep(1000); // might throw InterruptedException
@@ -251,6 +262,22 @@ public class Main {
             printToTerminal(terminal, textStartPositionX + i, textPositionY, TextColor.ANSI.GREEN,message.charAt(i));
         };
 
+    }
+
+    private static void handleBackground(Terminal terminal) throws IOException {
+        // get size of the terminal
+        int rowSize = terminal.getTerminalSize().getRows();
+        int colSize = terminal.getTerminalSize().getColumns();
+
+        // draw a border for the terminal
+        TextGraphics tGraphics = terminal.newTextGraphics();
+        tGraphics.drawRectangle(
+                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '*');
+
+        // add a header to the terminal
+            tGraphics.putString(35,0,"MONSTER GAME");
+
+        terminal.flush();
     }
 
 }
