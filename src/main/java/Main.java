@@ -26,10 +26,11 @@ public class Main {
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
 
-        // display score
-        final int scoreAvoidingMonster= 1;
-        int scoreBooster = 0;
-        displayScore(terminal, player.getScore());
+        // calculate and display player score
+        final int scoreAvoidingMonster= 10;
+        final int scoreBooster = 100;
+        int playerScore = 0;
+        displayScore(terminal, playerScore);
 
         // create monsters
         List<Position> monsters = new ArrayList<>();
@@ -74,6 +75,7 @@ public class Main {
                 Thread.sleep(5);
                 keyStroke = terminal.pollInput();
             } while (keyStroke == null);
+
 
             // if user wants to quit
             Character c = keyStroke.getCharacter();
@@ -121,9 +123,8 @@ public class Main {
             for (Position booster : boosters) {
                 if (booster.getX() == prevX && booster.getY() == prevY) {
                     crashIntoBooster = true;
-                    scoreBooster = scoreBooster + 4;
-                    booster.setScore(scoreBooster);
-                    displayScore(terminal, booster.getScore());
+                    playerScore = playerScore + scoreBooster;
+                    displayScore(terminal,playerScore);
                     break;
                 }
             }
@@ -167,8 +168,9 @@ public class Main {
                 player.setY(playerY);
 
                 // player avoided monster, increase points
-                // player.setScore(scoreAvoidingMonster);
-                //displayScore(terminal, player.getScore());
+                playerScore = playerScore + scoreAvoidingMonster;
+                displayScore(terminal,playerScore);
+
             }
 
             int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;

@@ -57,12 +57,4 @@ public class Position {
     public char getPlayerIcon() {
         return playerIcon;
     }
-
-    public void setScore (int score){
-        this.score = this.score + score;
-    }
-
-    public int getScore(){
-       return this.score;
-    }
 }
