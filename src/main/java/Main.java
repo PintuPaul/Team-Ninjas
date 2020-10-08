@@ -4,6 +4,8 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -12,38 +14,22 @@ public class Main {
         Terminal terminal = initiateTerminal();
 
         // create player
-        Player player = new Player(5, 5,5,5,'X');
+        Position player = new Position(5, 5,5,5,'X');
 
         // set the player on the terminal
         setPlayer(terminal, player);
 
-        Position[] monsterPos = new Position[3];
-        final char monster = 'Ö';
-        int x = 6;
-        int y = 1;
-        for (int i = 0; i < monsterPos.length; i++) {
-            monsterPos[i] = new Position(x, y);
-            terminal.setCursorPosition(monsterPos[i].getX(), monsterPos[i].getY());
-            terminal.setForegroundColor(TextColor.ANSI.RED);
-            terminal.putCharacter(monster);
-            x = x + 5;
-            y = y + 5;
-        }
-        terminal.flush();
+        // create monsters
+        List<Position> monsters = new ArrayList<>();
+        Position monster1 = new Position(10,10,10,10,'Ö');
+        Position monster2 = new Position(1,1,1,1,'Ö');
+        Position monster3 = new Position(20,10,20,10,'Ö');
+        monsters.add(monster1);
+        monsters.add(monster2);
+        monsters.add(monster3);
 
-/*        Random randomX = new Random(5);
-        Random randomY = new Random(5);
-        Position[] points = new Position[3];
-        int p,q ;
-        for (int i=0; i< points.length ; i++) {
-            p = randomX.nextInt() ;
-            q = randomY.nextInt() ;
-            terminal.setCursorPosition(p,q);
-            terminal.setForegroundColor(TextColor.ANSI.GREEN);
-            terminal.putCharacter('Ä');
-            points[i] = new Position(p,q);
-        }
-        terminal.flush();*/
+        // set monsters on the terminal
+        setMonster (terminal, monsters) ;
 
 
         // get the initial position of the player
@@ -91,22 +77,15 @@ public class Main {
                     break;
             }
 
-       /*     for (Position point : points) {
-                if (point.getX() == prevX && point.getY() == prevY) {
-                    playerX +=5 ;
-                }
-            }*/
-
-
+            // check if the player crashes with any of the monsters
             boolean crashIntoObsticle = false;
-            for (Position ps : monsterPos) {
-                System.out.println("Player : " + playerX + "," + playerY);
-                System.out.println("ps.get() = " + ps.getX() + "," + ps.getY());
-                if (ps.getX() == prevX && ps.getY() == prevY) {
+            for (int i=0 ; i< monsters.size() ; i++) {
+                if (monsters.get(i).getX() == prevX && monsters.get(i).getY() == prevY) {
                     crashIntoObsticle = true;
                 }
             }
 
+            // player crashed with the monster
             if (crashIntoObsticle) {
                 continueReadingInput = false;
                 System.out.println("quit");
@@ -127,25 +106,41 @@ public class Main {
             }
             terminal.flush();
 
-            int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
-            Position[] tempPos = new Position[3];
+            int monsterX, monsterY, prevMonsterX, prevMonsterY;
 
-            for (Position ps : monsterPos) {
-                monsterY = ps.getY();
-                monsterX = ps.getX();
-                prevMonsterX = monsterX;
-                prevMonsterY = monsterY;
+/*            // initial position of the monster
+            monsterX = monsters.get(0).getX();
+            monsterY = monsters.get(0).getY(); */
 
-                if (ps.getX() < playerX) {
+            for (int j=0 ; j< monsters.size() ; j++) {
+
+                // get the current position of monsters
+                monsterX = monsters.get(j).getX();
+                monsterY = monsters.get(j).getY();
+                System.out.println("monsterX = " + monsterX);
+                System.out.println("monsterY = " + monsterY);
+
+                // save the current position of the monster before moving
+                Position prevMonsterPos = new Position(monsterX, monsterY) ;
+                monsters.set(j, prevMonsterPos);
+
+                // fetch the previous position of the monsters
+                prevMonsterX = monsters.get(j).getPrevX();
+                prevMonsterY = monsters.get(j).getPrevY();
+                System.out.println("prevMonsterX = " + prevMonsterX);
+                System.out.println("prevMonsterY = " + prevMonsterY);
+
+                // move the monster
+                if (monsterX < playerX) {
                     monsterX = ++monsterX;
                 }
-                if (ps.getY() < playerY) {
+                if (monsterY < playerY) {
                     monsterY = ++monsterY;
                 }
-                if (ps.getX() > playerX) {
+                if (monsterX > playerX) {
                     monsterX = --monsterX;
                 }
-                if (ps.getY() > playerY) {
+                if (monsterY > playerY) {
                     monsterY = --monsterY;
                 }
                 terminal.setCursorPosition(prevMonsterX, prevMonsterY);
@@ -154,13 +149,17 @@ public class Main {
 
                 terminal.setCursorPosition(monsterX, monsterY);
                 terminal.setForegroundColor(TextColor.ANSI.RED);
-                terminal.putCharacter(monster);
+                terminal.putCharacter(monsters.get(j).getPlayerIcon());
                 terminal.flush();
 
-                tempPos[pos] = new Position(monsterX, monsterY);
-                pos++;
+                // save the new position of monsters
+                Position newMonsterPos = new Position(monsterX, monsterY,'Ö') ;
+                monsters.set(j, newMonsterPos);
+                System.out.println("monsterX = " + monsterX);
+                System.out.println("monsterY = " + monsterY);
+
             }
-            monsterPos = tempPos;
+          //  monsters.addAll(tempMonsters);
         }
     }
 
@@ -174,10 +173,20 @@ public class Main {
     }
 
     // method to set the player on the terminal
-    private static void setPlayer(Terminal terminal, Player player) throws IOException {
+    private static void setPlayer(Terminal terminal, Position player) throws IOException {
         terminal.setCursorPosition(player.getX(), player.getY());
         terminal.setForegroundColor(TextColor.ANSI.CYAN);
         terminal.putCharacter(player.getPlayerIcon());
         terminal.flush();
+    }
+
+    // method to set the monsters on the terminal
+    private static void setMonster(Terminal terminal, List<Position> monsters) throws IOException {
+        for (int i=0 ; i<monsters.size() ; i++) {
+            terminal.setCursorPosition(monsters.get(i).getX(), monsters.get(i).getY());
+            terminal.setForegroundColor(TextColor.ANSI.RED);
+            terminal.putCharacter(monsters.get(i).getPlayerIcon());
+            terminal.flush();
+        }
     }
 }
