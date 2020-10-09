@@ -164,7 +164,7 @@ public class Main {
                         playerScore = playerScore + scoreBooster;
                         displayScore(terminal, playerScore);
                         scoreIncrement = false;
-                        // boosters.remove(booster);
+                        boosters.remove(booster);
 
                     }
 
@@ -176,7 +176,7 @@ public class Main {
             if (crashIntoBooster) {
                 winChance++;
 
-                if (winChance == boosters.size()) {
+                if (winChance == 3) {
                     String message = "You WIN !!! Press ENTER to play again.";
                     for (int i = 0; i < message.length(); i++) {
                         printToTerminal(terminal, i + 15, 11, TextColor.ANSI.GREEN, message.charAt(i));
