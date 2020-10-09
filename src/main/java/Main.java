@@ -5,7 +5,7 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-
+import java.util.concurrent.ThreadLocalRandom;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,11 @@ public class Main {
         handleBackground(terminal);
 
         // create player
-        Position player = new Position(20, 10, 20, 10,'\u263a');
+        //Position player = new Position(20, 10, 20, 10,'\u263a');
+        int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows()-1);
+        int randomX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1);
+        Position player = new Position(randomX, randomY, randomX, randomY,'\u263a');
+
 
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
@@ -33,10 +37,15 @@ public class Main {
         displayScore(terminal, playerScore);
 
         // create monsters
+
         List<Position> monsters = new ArrayList<>();
-        monsters.add(new Position(1, 10, 'Ö'));
-        monsters.add(new Position(40, 5, 'Ö'));
-        monsters.add(new Position(40, 15, 'Ö'));
+        monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
+        monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
+        monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
+
+        //monsters.add(new Position(1, 10, 'Ö'));
+        //monsters.add(new Position(40, 5, 'Ö'));
+        //monsters.add(new Position(40, 15, 'Ö'));
 
         // set monsters on the terminal
         for (Position monster : monsters) {
@@ -49,9 +58,13 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
-        boosters.add(new Position(15, 5, '¤') );
-        boosters.add(new Position(25, 9, '¤') );
-        boosters.add(new Position(17, 15, '¤') );
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+
+        //boosters.add(new Position(15, 5, '¤') );
+        //boosters.add(new Position(25, 9, '¤') );
+        //boosters.add(new Position(17, 15, '¤') );
 
         // set boosters on the terminal
         for (Position booster : boosters) {
@@ -107,8 +120,19 @@ public class Main {
                 case ArrowRight:
                     playerX++;
                     break;
-            }
+                case Enter:
+                    playerX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
+                    playerY = ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1);
+                    playerScore = playerScore - 110;
+                    if (playerScore <= 0) {
+                        String message = "Game Over";
+                        for (int i = 0; i < message.length(); i++) {
+                            printToTerminal(terminal, i + 35, 11, TextColor.ANSI.RED, message.charAt(i));
+                            Thread.sleep(300); // might throw InterruptedException
 
+                        }
+                    }
+            }
             // check if the player crashes with any of the monsters
             boolean crashIntoObsticle = false;
             for (Position monster : monsters) {
@@ -216,7 +240,7 @@ public class Main {
                 printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
 
                 // save the new monster positions in a temporary list
-                Position newMonsterPos = new Position(monsterX, monsterY, 'Ö');
+                Position newMonsterPos = new Position(monsterX, monsterY, '\u262b');
                 tempMonsters.add(newMonsterPos);
                 pos ++ ;
             }
@@ -256,7 +280,7 @@ public class Main {
         String message = "Players score: " + score;
 
         final int textStartPositionX = 60;
-        final int textPositionY = 2;
+        final int textPositionY = 1;
         //Play a little sound when scoring
         // Thread thread = new Thread(new Music());
         // thread.start();
@@ -275,7 +299,7 @@ public class Main {
         // draw a border for the terminal
         TextGraphics tGraphics = terminal.newTextGraphics();
         tGraphics.drawRectangle(
-                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '*');
+                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '|');
 
         // add a header to the terminal
         tGraphics.putString(35,0,"MONSTER GAME");
