@@ -134,7 +134,7 @@ public class Main {
                 winChance ++ ;
 
                 if (winChance == boosters.size()) {
-                    String message = "You WON !!! :)    ";
+                    String message = "You WIN !!! :)  ";
                     for (int i = 0; i < message.length(); i++) {
                         printToTerminal(terminal,i+35,11,TextColor.ANSI.GREEN,message.charAt(i));
                         Thread.sleep(300); // might throw InterruptedException
@@ -147,7 +147,7 @@ public class Main {
             if (crashIntoObsticle) {
 
                 // display the message on to the terminal
-                String message = "Game Over";
+                String message = "Game Over :( ";
                 for (int i = 0; i < message.length(); i++) {
                     printToTerminal(terminal,i+35,11,TextColor.ANSI.RED,message.charAt(i));
                     Thread.sleep(300); // might throw InterruptedException
