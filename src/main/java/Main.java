@@ -3,6 +3,7 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import java.util.concurrent.ThreadLocalRandom;
@@ -127,8 +128,8 @@ public class Main {
                 case ArrowRight:
                     playerX++;
                     break;
-                case Enter:
-/*                    playerX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
+/*                case Enter:
+                    playerX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
                     playerY = ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1);
                     playerScore = playerScore - 110;
                     if (playerScore <= 0) {
@@ -138,8 +139,8 @@ public class Main {
                             Thread.sleep(300); // might throw InterruptedException
 
                         }
-                    }*/
-                    restartGame(terminal);
+                    }
+                    break;*/
             }
             // check if the player crashes with any of the monsters
             boolean crashIntoObsticle = false;
@@ -166,12 +167,13 @@ public class Main {
                 winChance++;
 
                 if (winChance == boosters.size()) {
-                    String message = "You WIN !!! :)  ";
+                    String message = "You WIN !!! Press ENTER to play again.";
                     for (int i = 0; i < message.length(); i++) {
-                        printToTerminal(terminal, i + 35, 11, TextColor.ANSI.GREEN, message.charAt(i));
-                        Thread.sleep(300); // might throw InterruptedException
+                        printToTerminal(terminal, i + 15, 11, TextColor.ANSI.GREEN, message.charAt(i));
+                        //Thread.sleep(300); // might throw InterruptedException
                     }
-                   // continueReadingInput = false;
+                    continueReadingInput = false;
+                    restartGame(terminal);
                 }
             }
 
@@ -179,13 +181,13 @@ public class Main {
             if (crashIntoObsticle) {
 
                 // display the message on to the terminal
-                String message = "Game Over :( ";
+                String message = "Game Over. Please press ENTER to play again.";
                 for (int i = 0; i < message.length(); i++) {
-                    printToTerminal(terminal, i + 35, 11, TextColor.ANSI.RED, message.charAt(i));
-                    Thread.sleep(300); // might throw InterruptedException
+                    printToTerminal(terminal, i + 15, 11, TextColor.ANSI.RED, message.charAt(i));
+                    //Thread.sleep(300); // might throw InterruptedException
                 }
-
-               // continueReadingInput = false;
+                continueReadingInput = false;
+                restartGame(terminal);
 
             } else {
 
@@ -203,64 +205,73 @@ public class Main {
                 playerScore = playerScore + scoreAvoidingMonster;
                 displayScore(terminal, playerScore);
 
-                int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
-                List<Position> tempMonsters = new ArrayList<>();
-
-                // move monsters based on player position
-                for (Position monster : monsters) {
-
-                    // get the current position of monsters
-                    monsterX = monster.getX();
-                    monsterY = monster.getY();
-
-                    // save the current position of the monster before moving
-                    prevMonsterX = monsterX;
-                    prevMonsterY = monsterY;
-
-                    // move the monster if player has not hit a booster
-                    if (!crashIntoBooster) {
-                        if (monsterX < playerX) {
-                            monsterX = ++monsterX;
-                        }
-                        if (monsterY < playerY) {
-                            monsterY = ++monsterY;
-                        }
-                        if (monsterX > playerX) {
-                            monsterX = --monsterX;
-                        }
-                        if (monsterY > playerY) {
-                            monsterY = --monsterY;
-                        }
-                    }
-                    // if player hits the booster, reset monster positions
-                    else {
-                        monsterX = defaultMonsterPosition.get(pos).getX();
-                        monsterY = defaultMonsterPosition.get(pos).getY();
-                    }
-
-                    // clear the previous monster position
-                    cleanPreviousPosition(terminal, prevMonsterX, prevMonsterY);
-
-                    // set the monster to new position
-                    printToTerminal(terminal, monsterX, monsterY, TextColor.ANSI.RED, monster.getPlayerIcon());
-
-                    // save the new monster positions in a temporary list
-                    Position newMonsterPos = new Position(monsterX, monsterY, '\u262b');
-                    tempMonsters.add(newMonsterPos);
-                    pos++;
-                }
-                // Reset the monster list with new monster positions
-                monsters.clear();
-                monsters.addAll(tempMonsters);
-
             }
+
+            int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
+            List<Position> tempMonsters = new ArrayList<>();
+
+            // move monsters based on player position
+            for (Position monster : monsters) {
+
+                // get the current position of monsters
+                monsterX = monster.getX();
+                monsterY = monster.getY();
+
+                // save the current position of the monster before moving
+                prevMonsterX = monsterX;
+                prevMonsterY = monsterY;
+
+                // move the monster if player has not hit a booster
+                if (!crashIntoBooster) {
+                    if (monsterX < playerX) {
+                        monsterX = ++monsterX;
+                    }
+                    if (monsterY < playerY) {
+                        monsterY = ++monsterY;
+                    }
+                    if (monsterX > playerX) {
+                        monsterX = --monsterX;
+                    }
+                    if (monsterY > playerY) {
+                        monsterY = --monsterY;
+                    }
+                }
+                // if player hits the booster, reset monster positions
+                else {
+                    monsterX = defaultMonsterPosition.get(pos).getX();
+                    monsterY = defaultMonsterPosition.get(pos).getY();
+                }
+
+                // clear the previous monster position
+                cleanPreviousPosition(terminal, prevMonsterX, prevMonsterY);
+
+                // set the monster to new position
+                printToTerminal(terminal, monsterX, monsterY, TextColor.ANSI.RED, monster.getPlayerIcon());
+
+                // save the new monster positions in a temporary list
+                Position newMonsterPos = new Position(monsterX, monsterY, '\u262b');
+                tempMonsters.add(newMonsterPos);
+                pos++;
+            }
+            // Reset the monster list with new monster positions
+            monsters.clear();
+            monsters.addAll(tempMonsters);
         }
     }
 
     // method to restart game
     private static void restartGame(Terminal terminal) throws IOException, InterruptedException {
-        terminal.close();
-        startGame();
+        KeyStroke keyStroke;
+
+        do {
+            Thread.sleep(500);
+            keyStroke = terminal.pollInput();
+        } while (keyStroke == null);
+
+        if (keyStroke.getKeyType() == KeyType.Enter) {
+            terminal.close();
+            startGame();
+        }
     }
 
     // method to initiate the terminal
