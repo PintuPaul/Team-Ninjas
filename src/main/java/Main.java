@@ -251,7 +251,12 @@ public class Main {
                 // clear the previous monster position
                 cleanPreviousPosition(terminal, prevMonsterX, prevMonsterY);
 
-                // when monsters crash with 
+                // when monsters crash with boosters
+                for (Position booster : boosters) {
+                    if (booster.getX() == monsterX && booster.getY() == monsterY) {
+                        monsterX ++ ;
+                    }
+                }
 
                 // set the monster to new position
                 printToTerminal(terminal, monsterX, monsterY, TextColor.ANSI.RED, monster.getPlayerIcon());
