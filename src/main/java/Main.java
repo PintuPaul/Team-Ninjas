@@ -49,9 +49,9 @@ public class Main {
         monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
         monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
 */
-        monsters.add(new Position(1, 10, 'Ö'));
-        monsters.add(new Position(40, 5, 'Ö'));
-        monsters.add(new Position(40, 15, 'Ö'));
+        monsters.add(new Position(1, 10, '\u262b'));
+        monsters.add(new Position(40, 5, '\u262b'));
+        monsters.add(new Position(40, 15, '\u262b'));
 
         // set monsters on the terminal
         for (Position monster : monsters) {
@@ -70,9 +70,9 @@ public class Main {
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
 */
 
-        boosters.add(new Position(15, 5, '¤') );
-        boosters.add(new Position(25, 9, '¤') );
-        boosters.add(new Position(17, 15, '¤') );
+        boosters.add(new Position(15, 5, '\u2665'));
+        boosters.add(new Position(25, 9, '\u2665'));
+        boosters.add(new Position(17, 15, '\u2665'));
 
         // set boosters on the terminal
         for (Position booster : boosters) {
@@ -91,12 +91,7 @@ public class Main {
         while (continueReadingInput) {
 
             // user input
-            KeyStroke keyStroke;
-            do {
-                Thread.sleep(5);
-                keyStroke = terminal.pollInput();
-            } while (keyStroke == null);
-
+            KeyStroke keyStroke = userInput(terminal);
 
             // if user wants to quit
             Character c = keyStroke.getCharacter();
@@ -261,17 +256,27 @@ public class Main {
 
     // method to restart game
     private static void restartGame(Terminal terminal) throws IOException, InterruptedException {
+
+        while (true) {
+            KeyStroke keyStroke = userInput(terminal);
+
+            if (keyStroke.getKeyType() == KeyType.Enter) {
+                terminal.close();
+                startGame();
+                break;
+            }
+        }
+    }
+
+    private static KeyStroke userInput(Terminal terminal) throws IOException, InterruptedException {
         KeyStroke keyStroke;
 
         do {
-            Thread.sleep(1000);
+            Thread.sleep(10);
             keyStroke = terminal.pollInput();
         } while (keyStroke == null);
 
-        if (keyStroke.getKeyType() == KeyType.Enter) {
-            terminal.close();
-            startGame();
-        }
+        return keyStroke;
     }
 
     // method to initiate the terminal
