@@ -177,7 +177,7 @@ public class Main {
                 winChance++;
 
                 if (winChance == 3) {
-                    String message = "You WIN !!! Press ENTER to play again.";
+                    String message = "You WIN !!! Press ENTER to play again or 'Q' to Quit!";
                     for (int i = 0; i < message.length(); i++) {
                         printToTerminal(terminal, i + 15, 11, TextColor.ANSI.GREEN, message.charAt(i));
                         //Thread.sleep(300); // might throw InterruptedException
@@ -191,7 +191,7 @@ public class Main {
             if (crashIntoObsticle) {
 
                 // display the message on to the terminal
-                String message = "Game Over. Please press ENTER to play again.";
+                String message = "Game Over. Please press ENTER to play again or 'Q' to Quit!";
                 for (int i = 0; i < message.length(); i++) {
                     printToTerminal(terminal, i + 15, 11, TextColor.ANSI.RED, message.charAt(i));
                     //Thread.sleep(300); // might throw InterruptedException
