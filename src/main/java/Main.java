@@ -36,7 +36,7 @@ public class Main {
         printToTerminal(terminal, player.getX(), player.getY(), TextColor.ANSI.CYAN, player.getPlayerIcon());
 
         // calculate and display player score
-        final int scoreAvoidingMonster = 1;
+        final int scoreAvoidingMonster = 10;
         final int scoreBooster = 100;
         int playerScore = 0;
         displayScore(terminal, playerScore);
