@@ -6,6 +6,8 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+
+import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,22 +16,27 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-       startGame();
+        // initiate terminal
+        Terminal terminal = initiateTerminal();
+
+        //info panel
+        displayInfoPanel(terminal);
+        startGame(terminal);
     }
 
     // method to start the game
-    private static void startGame() throws IOException, InterruptedException {
-        // initiate terminal
-        Terminal terminal = initiateTerminal();
+    private static void startGame(Terminal terminal) throws IOException, InterruptedException {
+
 
         // handle terminal
         handleBackground(terminal);
 
+
         // create player
-        Position player = new Position(20, 10, 20, 10,'\u263a');
-/*      int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows()-1);
-        int randomX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1);
-        Position player = new Position(randomX, randomY, randomX, randomY,'\u263a');*/
+        //Position player = new Position(20, 10, 20, 10,'\u263a');
+        int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows() - 1);
+        int randomX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
+        Position player = new Position(randomX, randomY, randomX, randomY, '\u263a');
 
 
         // set the player on the terminal
@@ -63,11 +70,9 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
-/*
-        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
-        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
-        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
-*/
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1), '\u2665'));
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1), '\u2665'));
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1), '\u2665'));
 
         boosters.add(new Position(15, 5, '\u2665'));
         boosters.add(new Position(25, 9, '\u2665'));
@@ -92,7 +97,7 @@ public class Main {
         boolean continueReadingInput = true;
         while (continueReadingInput) {
             // variable to decide when to increment the score
-            boolean scoreIncrement = true ;
+            boolean scoreIncrement = true;
 
             // user input
             KeyStroke keyStroke = userInput(terminal);
@@ -211,7 +216,7 @@ public class Main {
                 if (scoreIncrement) {
                     playerScore = playerScore + scoreAvoidingMonster;
                     displayScore(terminal, playerScore);
-                    scoreIncrement = false ;
+                    scoreIncrement = false;
                 }
 
             }
@@ -257,7 +262,7 @@ public class Main {
                 // when monsters crash with boosters
                 for (Position booster : boosters) {
                     if (booster.getX() == monsterX && booster.getY() == monsterY) {
-                        monsterX ++ ;
+                        monsterX++;
                     }
                 }
 
@@ -283,7 +288,8 @@ public class Main {
 
             if (keyStroke.getKeyType() == KeyType.Enter) {
                 terminal.close();
-                startGame();
+                Terminal terminalnew = initiateTerminal();
+                startGame(terminalnew);
                 break;
             }
         }
@@ -349,7 +355,7 @@ public class Main {
         // draw a border for the terminal
         TextGraphics tGraphics = terminal.newTextGraphics();
         tGraphics.drawRectangle(
-                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '*');
+                new TerminalPosition(0, 0), new TerminalSize(colSize, rowSize), '|');
 
         // add a header to the terminal
         tGraphics.setForegroundColor(TextColor.ANSI.YELLOW);
@@ -357,6 +363,7 @@ public class Main {
 
         terminal.flush();
     }
+
 
     // method to add developer information
     private static void developerDetails(Terminal terminal) throws IOException {
@@ -369,4 +376,63 @@ public class Main {
         tGraphics.putCSIStyledString(40, 22, "Developed By:Åsa,Pintu,Fredrik,Sebastian");
         terminal.flush();
     }
+
+
+    private static void displayInfoPanel(Terminal terminal) throws IOException, InterruptedException {
+
+
+        int rowSize = terminal.getTerminalSize().getRows();
+        int colSize = terminal.getTerminalSize().getColumns();
+        boolean continueReadingInput = true;
+
+        System.out.println("Rowsize: " + rowSize);
+        System.out.println("Colsize: " + colSize);
+
+        //  int row = 17;
+        //  int col = 24;
+        int row = rowSize / 2;
+        int col = colSize / 4;
+
+
+        // Create and position an information panel
+        TextGraphics tGraphics = terminal.newTextGraphics();
+        tGraphics.drawRectangle(
+                new TerminalPosition(colSize / 4, rowSize / 2), new TerminalSize(colSize - 30, rowSize / 4), '-');
+
+
+        //Put text inside rectangle
+        tGraphics.putString(col + 5 + 5, row, " Instructions ");
+        //add text inside the information panel
+        tGraphics.putString(col + 2, row + 1, "Avoid monsters, score by eat health");
+        tGraphics.putString(col + 2, row + 2, "Enter - get a new position, cost 100p");
+        tGraphics.putString(col + 2, row + 3, "q - Quit game");
+        tGraphics.putString(col + 2, row + 4, "s - Start game!");
+
+        terminal.flush();
+        while (continueReadingInput) {
+
+            // user input
+            KeyStroke keyStroke;
+            do {
+                Thread.sleep(5);
+                keyStroke = terminal.pollInput();
+            } while (keyStroke == null);
+
+            // if user wants to quit
+            Character c = keyStroke.getCharacter();
+            if (c == Character.valueOf('q')) {
+                continueReadingInput = false;
+                System.out.println("quit");
+                terminal.close();
+            } else if (c == Character.valueOf('s')) {
+                terminal.clearScreen();
+                continueReadingInput = false;
+                break;
+            }
+
+        }
+
+
+    }
 }
+
