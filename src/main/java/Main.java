@@ -26,17 +26,14 @@ public class Main {
 
     // method to start the game
     private static void startGame(Terminal terminal) throws IOException, InterruptedException {
-
-
         // handle terminal
         handleBackground(terminal);
 
-
         // create player
-        //Position player = new Position(20, 10, 20, 10,'\u263a');
-        int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows() - 1);
+        Position player = new Position(20, 10, 20, 10,'\u263a');
+/*      int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows() - 1);
         int randomX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
-        Position player = new Position(randomX, randomY, randomX, randomY, '\u263a');
+        Position player = new Position(randomX, randomY, randomX, randomY, '\u263a');*/
 
 
         // set the player on the terminal
@@ -70,9 +67,11 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
+/*
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1), '\u2665'));
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1), '\u2665'));
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1), '\u2665'));
+*/
 
         boosters.add(new Position(15, 5, '\u2665'));
         boosters.add(new Position(25, 9, '\u2665'));
@@ -288,8 +287,8 @@ public class Main {
 
             if (keyStroke.getKeyType() == KeyType.Enter) {
                 terminal.close();
-                Terminal terminalnew = initiateTerminal();
-                startGame(terminalnew);
+                Terminal terminalNew = initiateTerminal();
+                startGame(terminalNew);
                 break;
             }
         }
@@ -355,7 +354,7 @@ public class Main {
         // draw a border for the terminal
         TextGraphics tGraphics = terminal.newTextGraphics();
         tGraphics.drawRectangle(
-                new TerminalPosition(0, 0), new TerminalSize(colSize, rowSize), '|');
+                new TerminalPosition(0, 0), new TerminalSize(colSize, rowSize), '*');
 
         // add a header to the terminal
         tGraphics.setForegroundColor(TextColor.ANSI.YELLOW);
@@ -367,10 +366,6 @@ public class Main {
 
     // method to add developer information
     private static void developerDetails(Terminal terminal) throws IOException {
-        // get size of the terminal
-        int rowSize = terminal.getTerminalSize().getRows();
-        int colSize = terminal.getTerminalSize().getColumns();
-
         TextGraphics tGraphics = terminal.newTextGraphics();
         tGraphics.setForegroundColor(TextColor.ANSI.CYAN);
         tGraphics.putCSIStyledString(40, 22, "Developed By:Åsa,Pintu,Fredrik,Sebastian");
@@ -379,7 +374,6 @@ public class Main {
 
 
     private static void displayInfoPanel(Terminal terminal) throws IOException, InterruptedException {
-
 
         int rowSize = terminal.getTerminalSize().getRows();
         int colSize = terminal.getTerminalSize().getColumns();
@@ -391,7 +385,7 @@ public class Main {
         //  int row = 17;
         //  int col = 24;
         int row = rowSize / 2;
-        int col = colSize / 4;
+        int col = colSize / 3;
 
 
         // Create and position an information panel
@@ -404,9 +398,9 @@ public class Main {
         tGraphics.putString(col + 5 + 5, row, " Instructions ");
         //add text inside the information panel
         tGraphics.putString(col + 2, row + 1, "Avoid monsters, score by eat health");
-        tGraphics.putString(col + 2, row + 2, "Enter - get a new position, cost 100p");
-        tGraphics.putString(col + 2, row + 3, "q - Quit game");
-        tGraphics.putString(col + 2, row + 4, "s - Start game!");
+        //tGraphics.putString(col + 2, row + 2, "Enter - get a new position, cost 100p");
+        tGraphics.putString(col + 2, row + 2, "q - Quit game");
+        tGraphics.putString(col + 2, row + 3, "s - Start game!");
 
         terminal.flush();
         while (continueReadingInput) {
