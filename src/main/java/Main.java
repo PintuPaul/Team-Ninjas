@@ -103,7 +103,7 @@ public class Main {
 
             // if user wants to quit
             Character c = keyStroke.getCharacter();
-            if (c == Character.valueOf('q')) {
+            if (c == Character.valueOf('q') || c == Character.valueOf('Q')) {
                 continueReadingInput = false;
                 System.out.println("quit");
                 terminal.close();
@@ -291,6 +291,12 @@ public class Main {
                 startGame(terminalNew);
                 break;
             }
+
+            Character c = keyStroke.getCharacter();
+
+            if (c == Character.valueOf('q') || c == Character.valueOf('Q') ) {
+                terminal.close();
+            }
         }
     }
 
@@ -414,11 +420,11 @@ public class Main {
 
             // if user wants to quit
             Character c = keyStroke.getCharacter();
-            if (c == Character.valueOf('q')) {
+            if (c == Character.valueOf('q') || c == Character.valueOf('Q')) {
                 continueReadingInput = false;
                 System.out.println("quit");
                 terminal.close();
-            } else if (c == Character.valueOf('s')) {
+            } else if (c == Character.valueOf('s') || c == Character.valueOf('S')) {
                 terminal.clearScreen();
                 continueReadingInput = false;
                 break;
