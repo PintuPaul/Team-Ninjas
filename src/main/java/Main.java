@@ -264,7 +264,7 @@ public class Main {
         KeyStroke keyStroke;
 
         do {
-            Thread.sleep(500);
+            Thread.sleep(1000);
             keyStroke = terminal.pollInput();
         } while (keyStroke == null);
 
