@@ -78,6 +78,9 @@ public class Main {
             printToTerminal(terminal, booster.getX(), booster.getY(), TextColor.ANSI.GREEN, booster.getPlayerIcon());
         }
 
+        // print developer details
+        developerDetails(terminal);
+
         // get the initial position of the player
         int playerX = player.getX();
         int playerY = player.getY();
@@ -349,9 +352,21 @@ public class Main {
                 new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '*');
 
         // add a header to the terminal
-        tGraphics.putString(35, 0, "MONSTER GAME");
+        tGraphics.setForegroundColor(TextColor.ANSI.YELLOW);
+        tGraphics.putString(35, 0, " MONSTER GAME ");
 
         terminal.flush();
     }
 
+    // method to add developer information
+    private static void developerDetails(Terminal terminal) throws IOException {
+        // get size of the terminal
+        int rowSize = terminal.getTerminalSize().getRows();
+        int colSize = terminal.getTerminalSize().getColumns();
+
+        TextGraphics tGraphics = terminal.newTextGraphics();
+        tGraphics.setForegroundColor(TextColor.ANSI.CYAN);
+        tGraphics.putCSIStyledString(40, 22, "Developed By:Åsa,Pintu,Fredrik,Sebastian");
+        terminal.flush();
+    }
 }
