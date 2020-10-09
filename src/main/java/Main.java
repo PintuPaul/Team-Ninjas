@@ -21,8 +21,10 @@ public class Main {
         handleBackground(terminal);
 
         // create player
-        Position player = new Position(20, 10, 20, 10,'\u263a');
-
+        //Position player = new Position(20, 10, 20, 10,'\u263a');
+        int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows()-1);
+        int randomX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1);
+        Position player = new Position(randomX, randomY, randomX, randomY,'\u263a');
 
 
         // set the player on the terminal
