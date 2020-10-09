@@ -25,10 +25,10 @@ public class Main {
         handleBackground(terminal);
 
         // create player
-        //Position player = new Position(20, 10, 20, 10,'\u263a');
-        int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows()-1);
+        Position player = new Position(20, 10, 20, 10,'\u263a');
+/*      int randomY = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getRows()-1);
         int randomX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1);
-        Position player = new Position(randomX, randomY, randomX, randomY,'\u263a');
+        Position player = new Position(randomX, randomY, randomX, randomY,'\u263a');*/
 
 
         // set the player on the terminal
@@ -43,13 +43,14 @@ public class Main {
         // create monsters
 
         List<Position> monsters = new ArrayList<>();
+/*
         monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
         monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
         monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
-
-        //monsters.add(new Position(1, 10, 'Ö'));
-        //monsters.add(new Position(40, 5, 'Ö'));
-        //monsters.add(new Position(40, 15, 'Ö'));
+*/
+        monsters.add(new Position(1, 10, 'Ö'));
+        monsters.add(new Position(40, 5, 'Ö'));
+        monsters.add(new Position(40, 15, 'Ö'));
 
         // set monsters on the terminal
         for (Position monster : monsters) {
@@ -62,13 +63,15 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
+/*
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
         boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+*/
 
-        //boosters.add(new Position(15, 5, '¤') );
-        //boosters.add(new Position(25, 9, '¤') );
-        //boosters.add(new Position(17, 15, '¤') );
+        boosters.add(new Position(15, 5, '¤') );
+        boosters.add(new Position(25, 9, '¤') );
+        boosters.add(new Position(17, 15, '¤') );
 
         // set boosters on the terminal
         for (Position booster : boosters) {
@@ -125,7 +128,7 @@ public class Main {
                     playerX++;
                     break;
                 case Enter:
-                    playerX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
+/*                    playerX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
                     playerY = ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1);
                     playerScore = playerScore - 110;
                     if (playerScore <= 0) {
@@ -135,7 +138,8 @@ public class Main {
                             Thread.sleep(300); // might throw InterruptedException
 
                         }
-                    }
+                    }*/
+                    restartGame(terminal);
             }
             // check if the player crashes with any of the monsters
             boolean crashIntoObsticle = false;
@@ -167,7 +171,7 @@ public class Main {
                         printToTerminal(terminal, i + 35, 11, TextColor.ANSI.GREEN, message.charAt(i));
                         Thread.sleep(300); // might throw InterruptedException
                     }
-                    continueReadingInput = false;
+                   // continueReadingInput = false;
                 }
             }
 
@@ -181,7 +185,7 @@ public class Main {
                     Thread.sleep(300); // might throw InterruptedException
                 }
 
-                continueReadingInput = false;
+               // continueReadingInput = false;
 
             } else {
 
@@ -199,60 +203,58 @@ public class Main {
                 playerScore = playerScore + scoreAvoidingMonster;
                 displayScore(terminal, playerScore);
 
-            }
+                int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
+                List<Position> tempMonsters = new ArrayList<>();
 
-            int monsterX, monsterY, prevMonsterX, prevMonsterY, pos = 0;
-            List<Position> tempMonsters = new ArrayList<>();
+                // move monsters based on player position
+                for (Position monster : monsters) {
 
-            // move monsters based on player position
-            for (Position monster : monsters) {
+                    // get the current position of monsters
+                    monsterX = monster.getX();
+                    monsterY = monster.getY();
 
-                // get the current position of monsters
-                monsterX = monster.getX();
-                monsterY = monster.getY();
+                    // save the current position of the monster before moving
+                    prevMonsterX = monsterX;
+                    prevMonsterY = monsterY;
 
-                // save the current position of the monster before moving
-                prevMonsterX = monsterX;
-                prevMonsterY = monsterY;
-
-                // move the monster if player has not hit a booster
-                if (!crashIntoBooster) {
-                    if (monsterX < playerX) {
-                        monsterX = ++monsterX;
+                    // move the monster if player has not hit a booster
+                    if (!crashIntoBooster) {
+                        if (monsterX < playerX) {
+                            monsterX = ++monsterX;
+                        }
+                        if (monsterY < playerY) {
+                            monsterY = ++monsterY;
+                        }
+                        if (monsterX > playerX) {
+                            monsterX = --monsterX;
+                        }
+                        if (monsterY > playerY) {
+                            monsterY = --monsterY;
+                        }
                     }
-                    if (monsterY < playerY) {
-                        monsterY = ++monsterY;
+                    // if player hits the booster, reset monster positions
+                    else {
+                        monsterX = defaultMonsterPosition.get(pos).getX();
+                        monsterY = defaultMonsterPosition.get(pos).getY();
                     }
-                    if (monsterX > playerX) {
-                        monsterX = --monsterX;
-                    }
-                    if (monsterY > playerY) {
-                        monsterY = --monsterY;
-                    }
+
+                    // clear the previous monster position
+                    cleanPreviousPosition(terminal, prevMonsterX, prevMonsterY);
+
+                    // set the monster to new position
+                    printToTerminal(terminal, monsterX, monsterY, TextColor.ANSI.RED, monster.getPlayerIcon());
+
+                    // save the new monster positions in a temporary list
+                    Position newMonsterPos = new Position(monsterX, monsterY, '\u262b');
+                    tempMonsters.add(newMonsterPos);
+                    pos++;
                 }
-                // if player hits the booster, reset monster positions
-                else {
-                    monsterX = defaultMonsterPosition.get(pos).getX();
-                    monsterY = defaultMonsterPosition.get(pos).getY();
-                }
+                // Reset the monster list with new monster positions
+                monsters.clear();
+                monsters.addAll(tempMonsters);
 
-                // clear the previous monster position
-                cleanPreviousPosition(terminal, prevMonsterX, prevMonsterY);
-
-                // set the monster to new position
-                printToTerminal(terminal, monsterX, monsterY, TextColor.ANSI.RED, monster.getPlayerIcon());
-
-                // save the new monster positions in a temporary list
-                Position newMonsterPos = new Position(monsterX, monsterY, '\u262b');
-                tempMonsters.add(newMonsterPos);
-                pos++;
             }
-            // Reset the monster list with new monster positions
-            monsters.clear();
-            monsters.addAll(tempMonsters);
         }
-
-        //restartGame(terminal);
     }
 
     // method to restart game
