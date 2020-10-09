@@ -5,7 +5,7 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-
+import java.util.concurrent.ThreadLocalRandom;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,8 @@ public class Main {
         // create player
         Position player = new Position(20, 10, 20, 10,'\u263a');
 
+
+
         // set the player on the terminal
         printToTerminal(terminal, player.getX(), player.getY(),TextColor.ANSI.CYAN, player.getPlayerIcon() );
 
@@ -33,10 +35,15 @@ public class Main {
         displayScore(terminal, playerScore);
 
         // create monsters
+
         List<Position> monsters = new ArrayList<>();
-        monsters.add(new Position(1, 10, 'Ö'));
-        monsters.add(new Position(40, 5, 'Ö'));
-        monsters.add(new Position(40, 15, 'Ö'));
+        monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
+        monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
+        monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
+
+        //monsters.add(new Position(1, 10, 'Ö'));
+        //monsters.add(new Position(40, 5, 'Ö'));
+        //monsters.add(new Position(40, 15, 'Ö'));
 
         // set monsters on the terminal
         for (Position monster : monsters) {
