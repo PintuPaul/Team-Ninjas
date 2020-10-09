@@ -157,15 +157,15 @@ public class Main {
             // check if the player hits the boosters
             boolean crashIntoBooster = false;
             for (Position booster : boosters) {
-                if (booster.getX() == playerX && booster.getY() == playerY) {
+                if (booster.getX() == prevX && booster.getY() == prevY) {
                     crashIntoBooster = true;
 
                     if (scoreIncrement) {
                         playerScore = playerScore + scoreBooster;
                         displayScore(terminal, playerScore);
                         scoreIncrement = false;
+                        // boosters.remove(booster);
 
-                        boosters.remove(booster);
                     }
 
                     break;
