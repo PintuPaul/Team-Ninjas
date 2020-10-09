@@ -120,8 +120,19 @@ public class Main {
                 case ArrowRight:
                     playerX++;
                     break;
-            }
+                case Enter:
+                    playerX = ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns() - 1);
+                    playerY = ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows() - 1);
+                    playerScore = playerScore - 110;
+                    if (playerScore <= 0) {
+                        String message = "Game Over";
+                        for (int i = 0; i < message.length(); i++) {
+                            printToTerminal(terminal, i + 35, 11, TextColor.ANSI.RED, message.charAt(i));
+                            Thread.sleep(300); // might throw InterruptedException
 
+                        }
+                    }
+            }
             // check if the player crashes with any of the monsters
             boolean crashIntoObsticle = false;
             for (Position monster : monsters) {
@@ -229,7 +240,7 @@ public class Main {
                 printToTerminal(terminal,monsterX,monsterY,TextColor.ANSI.RED,monster.getPlayerIcon()) ;
 
                 // save the new monster positions in a temporary list
-                Position newMonsterPos = new Position(monsterX, monsterY, 'Ö');
+                Position newMonsterPos = new Position(monsterX, monsterY, '\u262b');
                 tempMonsters.add(newMonsterPos);
                 pos ++ ;
             }
@@ -269,7 +280,7 @@ public class Main {
         String message = "Players score: " + score;
 
         final int textStartPositionX = 60;
-        final int textPositionY = 2;
+        final int textPositionY = 1;
         //Play a little sound when scoring
         // Thread thread = new Thread(new Music());
         // thread.start();
@@ -288,7 +299,7 @@ public class Main {
         // draw a border for the terminal
         TextGraphics tGraphics = terminal.newTextGraphics();
         tGraphics.drawRectangle(
-                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '*');
+                new TerminalPosition(0,0), new TerminalSize(colSize,rowSize), '|');
 
         // add a header to the terminal
         tGraphics.putString(35,0,"MONSTER GAME");
