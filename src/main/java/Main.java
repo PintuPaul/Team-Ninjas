@@ -58,9 +58,13 @@ public class Main {
 
         // add boosters
         List<Position> boosters = new ArrayList<>();
-        boosters.add(new Position(15, 5, '¤') );
-        boosters.add(new Position(25, 9, '¤') );
-        boosters.add(new Position(17, 15, '¤') );
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+        boosters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u2665'));
+
+        //boosters.add(new Position(15, 5, '¤') );
+        //boosters.add(new Position(25, 9, '¤') );
+        //boosters.add(new Position(17, 15, '¤') );
 
         // set boosters on the terminal
         for (Position booster : boosters) {
