@@ -36,13 +36,12 @@ public class Main {
         printToTerminal(terminal, player.getX(), player.getY(), TextColor.ANSI.CYAN, player.getPlayerIcon());
 
         // calculate and display player score
-        final int scoreAvoidingMonster = 10;
+        final int scoreAvoidingMonster = 1;
         final int scoreBooster = 100;
         int playerScore = 0;
         displayScore(terminal, playerScore);
 
         // create monsters
-
         List<Position> monsters = new ArrayList<>();
 /*
         monsters.add(new Position(ThreadLocalRandom.current().nextInt(2, terminal.getTerminalSize().getColumns()-1), ThreadLocalRandom.current().nextInt(3, terminal.getTerminalSize().getRows()-1), '\u262b'));
@@ -89,6 +88,8 @@ public class Main {
         // read user input to move the player, move monsters behind the player
         boolean continueReadingInput = true;
         while (continueReadingInput) {
+            // variable to decide when to increment the score
+            boolean scoreIncrement = true ;
 
             // user input
             KeyStroke keyStroke = userInput(terminal);
@@ -149,10 +150,17 @@ public class Main {
             // check if the player hits the boosters
             boolean crashIntoBooster = false;
             for (Position booster : boosters) {
-                if (booster.getX() == prevX && booster.getY() == prevY) {
+                if (booster.getX() == playerX && booster.getY() == playerY) {
                     crashIntoBooster = true;
-                    playerScore = playerScore + scoreBooster;
-                    displayScore(terminal, playerScore);
+
+                    if (scoreIncrement) {
+                        playerScore = playerScore + scoreBooster;
+                        displayScore(terminal, playerScore);
+                        scoreIncrement = false;
+
+                        boosters.remove(booster);
+                    }
+
                     break;
                 }
             }
@@ -197,8 +205,11 @@ public class Main {
                 player.setY(playerY);
 
                 // player avoided monster, increase points
-                playerScore = playerScore + scoreAvoidingMonster;
-                displayScore(terminal, playerScore);
+                if (scoreIncrement) {
+                    playerScore = playerScore + scoreAvoidingMonster;
+                    displayScore(terminal, playerScore);
+                    scoreIncrement = false ;
+                }
 
             }
 
@@ -239,6 +250,8 @@ public class Main {
 
                 // clear the previous monster position
                 cleanPreviousPosition(terminal, prevMonsterX, prevMonsterY);
+
+                // when monsters crash with 
 
                 // set the monster to new position
                 printToTerminal(terminal, monsterX, monsterY, TextColor.ANSI.RED, monster.getPlayerIcon());
